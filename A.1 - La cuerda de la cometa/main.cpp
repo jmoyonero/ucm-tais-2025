@@ -6,11 +6,12 @@
 
 #include <iostream>
 #include <fstream>
+#include <vector>
 
 using namespace std;
 
 // propios o los de las estructuras de datos de clase
-#include "../0.1 - TADS/EnterosInf.h"
+#include "EnterosInf.h"
 
 /*@ <answer>
 
@@ -31,6 +32,10 @@ dp[j] = Infinito;
 dp[0] = 0;
 dp[j] = min( dp[j], coste + dp[j-l] ) ; si l <= j (iterando j de mayor a menor)
 
+Complejidad:
+ - Coste Temporal: O(N * L).
+ - Coste Espacial: O(L). Se almacena únicamente un vector de tamaño L+1 para cada cálculo, reutilizando el espacio.
+
  @ </answer> */
 
 
@@ -40,7 +45,7 @@ dp[j] = min( dp[j], coste + dp[j-l] ) ; si l <= j (iterando j de mayor a menor)
 //@ <answer>
 
 struct Cometa {
-    int formas;
+    long long formas;
     EntInf minCoste;
     EntInf minCuerdas;
 };
@@ -62,7 +67,7 @@ bool resuelveCaso() {
     dp[0] = {1, 0, 0};
 
     for (int i = 1; i <= N; ++i) {
-        int longitud, coste;
+        long long longitud, coste;
         cin >> longitud >> coste;
 
         for (int j = L; j >= longitud; --j) {

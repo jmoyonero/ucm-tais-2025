@@ -1,6 +1,6 @@
 /*@ <authors>
-*
- * F28 Jonathan Paul Moyonero Espinoza
+ *
+ * Jonathan Paul Moyonero Espinoza (F28)
  *
  *@ </authors> */
 
@@ -8,9 +8,12 @@
 #include <fstream>
 #include <vector>
 #include <algorithm>
-#include "Matriz.h"
 
 using namespace std;
+
+// propios o los de las estructuras de datos de clase
+#include "Matriz.h"
+
 
 /*@ <answer>
 
@@ -31,8 +34,10 @@ Inicio:
 
 
 // ================================================================
-// Escribe el código completo de tu solución aquí debajo (después de la marca)
+// Escribe el código completo de tu solución aquí debajo
+// ================================================================
 //@ <answer>
+
 
 struct Cofre {
     int oro;
@@ -41,13 +46,18 @@ struct Cofre {
 };
 
 bool resuelveCaso() {
-    // TODO: leer la entrada
+    // leer los datos de la entrada
+
     int T, N;
     cin >> T >> N;
 
-    if (!std::cin) return false;
+    if (!std::cin) return false; // fin de la entrada
 
     vector<Cofre> cofres(N);
+
+    // resolver el caso posiblemente llamando a otras funciones
+
+    // Programación dinámica: dp
 
     for (int i = 0; i < N; ++i) {
         cin >> cofres[i].profundidad >> cofres[i].oro;
@@ -94,23 +104,24 @@ bool resuelveCaso() {
 }
 
 //@ </answer>
-//  Lo que se escriba debajo de esta línea ya no forma parte de la solución.
+//  Lo que se escriba dejado de esta línea ya no forma parte de la solución.
 
 int main() {
     // ajustes para que cin extraiga directamente de un fichero
 #ifndef DOMJUDGE
-    ifstream in("1.in");
+    std::ifstream in("1.in");
     if (!in.is_open())
-        cout << "Error: no se ha podido abrir el archivo de entrada." << endl;
-    auto cinbuf = cin.rdbuf(in.rdbuf());
+        std::cout << "Error: no se ha podido abrir el archivo de entrada." << std::endl;
+    auto cinbuf = std::cin.rdbuf(in.rdbuf());
 #endif
 
-    // Resolvemos
     while (resuelveCaso());
 
     // para dejar todo como estaba al principio
 #ifndef DOMJUDGE
-    cin.rdbuf(cinbuf);
+    std::cin.rdbuf(cinbuf);
+    std::cout << "Pulsa Intro para salir..." << std::flush;
+    std::cin.get();
 #endif
     return 0;
 }

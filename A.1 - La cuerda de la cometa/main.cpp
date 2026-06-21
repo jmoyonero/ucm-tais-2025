@@ -15,26 +15,26 @@ using namespace std;
 
 /*@ <answer>
 
-Mochila 0/1 (Knapsack Problem) (Optimizado)
+Mochila 0/1 (Knapsack Problem) con tabla 2D (no optimizado en espacio).
 
-Matemático
-dp[j] = 0;
-dp[0] = 1;
-dp[j] = dp[j] + dp[j-l] ; si l <= j (iterando j de mayor a menor)
+dp[i][j] = respuesta usando los primeros i cordeles para sumar exactamente la longitud j.
+Cada celda combina dos casos disjuntos: NO usar el cordel i (dp[i-1][j]) o SÍ usarlo, en cuyo
+caso lo que falta lo cubren los cordeles anteriores (dp[i-1][j-l]). Ambos miran la fila i-1, así
+que el orden de j es indiferente (no se sobreescribe nada).
 
-Ingeniero
-dp[j] = Infinito;
-dp[0] = 0;
-dp[j] = min( dp[j], 1 + dp[j-l] ) ; si l <= j (iterando j de mayor a menor)
+Caso base (igual para las tres magnitudes): dp[0][0] = {formas:1, minCuerdas:0, minCoste:0};
+el resto de la fila 0 = {0, Infinito, Infinito}.
 
-Economista
-dp[j] = Infinito;
-dp[0] = 0;
-dp[j] = min( dp[j], coste + dp[j-l] ) ; si l <= j (iterando j de mayor a menor)
+Recurrencia (si l <= j; si no, dp[i][j] = dp[i-1][j]):
+  Matemático: dp[i][j].formas     = dp[i-1][j].formas + dp[i-1][j-l].formas
+  Ingeniero:  dp[i][j].minCuerdas = min(dp[i-1][j].minCuerdas, dp[i-1][j-l].minCuerdas + 1)
+  Economista: dp[i][j].minCoste   = min(dp[i-1][j].minCoste,   dp[i-1][j-l].minCoste + coste)
+
+La respuesta está en dp[N][L]: si formas > 0 escribimos SI con las tres magnitudes, si no, NO.
 
 Complejidad:
  - Coste Temporal: O(N * L).
- - Coste Espacial: O(L). Se almacena únicamente un vector de tamaño L+1 para cada cálculo, reutilizando el espacio.
+ - Coste Espacial: O(N * L). Por la matriz.
 
  @ </answer> */
 
@@ -62,30 +62,30 @@ bool resuelveCaso() {
 
     // Programación dinámica: dp
 
-    vector<Cometa> dp(L + 1, {0, Infinito, Infinito});
+    vector<vector<Cometa> > dp(N + 1, vector<Cometa>(L + 1, {0, Infinito, Infinito}));
 
-    dp[0] = {1, 0, 0};
+    dp[0][0] = {1, 0, 0};
 
-    for (int i = 1; i <= N; ++i) {
-        long long longitud, coste;
+    for (int i = 1; i <= N; i++) {
+        int longitud, coste;
         cin >> longitud >> coste;
 
-        for (int j = L; j >= longitud; --j) {
-            if (dp[j - longitud].formas > 0)
-                dp[j].formas += dp[j - longitud].formas;
-
-            if (dp[j - longitud].minCoste != Infinito)
-                dp[j].minCoste = min(dp[j].minCoste, dp[j - longitud].minCoste + coste);
-
-            if (dp[j - longitud].minCuerdas != Infinito)
-                dp[j].minCuerdas = min(dp[j].minCuerdas, dp[j - longitud].minCuerdas + 1);
+        for (int j = 0; j <= L; j++) {
+            dp[i][j] = dp[i - 1][j]; // caso: NO uso el cordel i
+            if (j >= longitud) {
+                // caso: SÍ lo uso (si cabe)
+                const Cometa &prev = dp[i - 1][j - longitud];
+                dp[i][j].formas += prev.formas;
+                dp[i][j].minCuerdas = min(dp[i][j].minCuerdas, prev.minCuerdas + 1);
+                dp[i][j].minCoste = min(dp[i][j].minCoste, prev.minCoste + coste);
+            }
         }
     }
 
     // escribir la solución
 
-    if (dp[L].formas > 0) {
-        cout << "SI " << dp[L].formas << " " << dp[L].minCoste << " " << dp[L].minCuerdas << "\n";
+    if (dp[N][L].formas > 0) {
+        cout << "SI " << dp[N][L].formas << " " << dp[N][L].minCuerdas << " " << dp[N][L].minCoste << "\n";
     } else {
         cout << "NO\n";
     }

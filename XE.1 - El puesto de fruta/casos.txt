@@ -1,0 +1,19 @@
+4
+manzana 3
+platano 4
+tomate 2
+naranja 12
+6
+C manzana 1
+C naranja 10
+C naranja 5
+Q
+P tomate 6
+Q
+1
+pera 2
+3
+Q
+C pera 3
+Q
+0
